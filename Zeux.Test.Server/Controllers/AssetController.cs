@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Zeux.Test.Models;
 using Zeux.Test.Services;
+using System.Linq;
 
 namespace Zeux.Test.Server.Controllers
 {
@@ -26,6 +27,21 @@ namespace Zeux.Test.Server.Controllers
                 return await _assetService.Get();
 
             return await _assetService.Get(type);
+        }
+
+        [HttpGet("[action]/{type}")]
+        public async Task<IEnumerable<Asset>> GetAlphabetical(string type)
+        {
+
+            if (string.IsNullOrWhiteSpace(type) || type.ToLower() == "all")
+            {
+                var res = await _assetService.Get();
+                return res.OrderBy(asset => asset.Name);
+
+            }
+
+            var result = await _assetService.Get(type);
+            return result.OrderBy(asset => asset.Name);
         }
 
         [HttpGet("[action]")]

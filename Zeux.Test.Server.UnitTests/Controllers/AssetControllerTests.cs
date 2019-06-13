@@ -32,6 +32,28 @@ namespace Zeux.Test.Server.UnitTests.Controllers
         }
 
         [Fact]
+        public async void Get_ReturnsAllAssets_WhenTypeIsEmptyAlphabetical()
+        {
+            var context = new FakeContext();
+
+            // Arrange
+            var mockService = new Mock<IAssetService>();
+            mockService.Setup(service => service.Get())
+                .ReturnsAsync(context.Assets);
+
+            var controller = new AssetController(mockService.Object);
+
+            // Act
+            var res = await controller.GetAlphabetical(string.Empty);
+
+            // Assert
+            Assert.Equal(context.Assets.Count(), res.Count());
+            Assert.IsAssignableFrom<IEnumerable<Asset>>(res);
+            Assert.Equal(context.Assets.OrderBy(ass => ass.Name), res);
+
+        }
+
+        [Fact]
         public async void Get_ReturnsAllAssets_WhenTypeIsNoneEmpty()
         {
             var context = new FakeContext();
@@ -50,6 +72,28 @@ namespace Zeux.Test.Server.UnitTests.Controllers
             // Assert
             Assert.Equal(context.Assets.Count(a => a.Type.Name == type), res.Count());
             Assert.IsAssignableFrom<IEnumerable<Asset>>(res);
+        }
+
+        [Fact]
+        public async void Get_ReturnsAllAssets_WhenTypeIsNoneEmptyAlphabetical()
+        {
+            var context = new FakeContext();
+
+            // Arrange
+            var type = "Savings";
+            var mockService = new Mock<IAssetService>();
+            mockService.Setup(service => service.Get(type))
+                .ReturnsAsync(context.Assets.Where(a => a.Type.Name == type));
+
+            var controller = new AssetController(mockService.Object);
+
+            // Act
+            var res = await controller.Get(type);
+
+            // Assert
+            Assert.Equal(context.Assets.Count(a => a.Type.Name == type), res.Count());
+            Assert.IsAssignableFrom<IEnumerable<Asset>>(res);
+            Assert.Equal(context.Assets.OrderBy(ass => ass.Name), res);
         }
 
         [Fact]
@@ -74,6 +118,29 @@ namespace Zeux.Test.Server.UnitTests.Controllers
         }
 
         [Fact]
+        public async void Get_ReturnsAllAssets_WhenTypeIsNoneExistsAlph()
+        {
+            var context = new FakeContext();
+
+            // Arrange
+            var type = "Non exists type";
+            var mockService = new Mock<IAssetService>();
+            mockService.Setup(service => service.Get(type))
+                .ReturnsAsync(context.Assets.Where(a => a.Type.Name == type));
+
+            var controller = new AssetController(mockService.Object);
+
+            // Act
+            var res = await controller.Get(type);
+
+            // Assert
+            Assert.Empty(res);
+            Assert.IsAssignableFrom<IEnumerable<Asset>>(res);
+            Assert.Equal(context.Assets.OrderBy(ass => ass.Name), res);
+
+        }
+
+        [Fact]
         public async void Get_ReturnsAllAssetsTypes()
         {
             var context = new FakeContext();
@@ -91,6 +158,28 @@ namespace Zeux.Test.Server.UnitTests.Controllers
             // Assert
             Assert.Equal(context.AssetTypes.Count(), res.Count());
             Assert.IsAssignableFrom<IEnumerable<AssetType>>(res);
+        }
+
+        [Fact]
+        public async void Get_ReturnsAllAssetsTypesAlph()
+        {
+            var context = new FakeContext();
+
+            // Arrange
+            var mockService = new Mock<IAssetService>();
+            mockService.Setup(service => service.GetTypes())
+                .ReturnsAsync(context.AssetTypes);
+
+            var controller = new AssetController(mockService.Object);
+
+            // Act
+            var res = await controller.GetTypes();
+
+            // Assert
+            Assert.Equal(context.AssetTypes.Count(), res.Count());
+            Assert.IsAssignableFrom<IEnumerable<AssetType>>(res);
+            Assert.Equal(context.AssetTypes.OrderBy(ass => ass.Name), res);
+
         }
 
         [Fact]
