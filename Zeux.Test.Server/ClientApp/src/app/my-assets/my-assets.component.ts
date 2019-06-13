@@ -41,7 +41,7 @@ export class MyAssetsComponent implements OnInit {
   }
 
   reloadAssets() {
-    const uriAsset = '/api/asset/Get/' + this.route.snapshot.params.type;
+    const uriAsset = '/api/asset/GetAlphabetical/' + this.route.snapshot.params.type;
     this.http.get<Array<Asset>>(uriAsset, this.httpOptions)
     .subscribe((dataAssets: Array<Asset>) => {
           this.assets = dataAssets;
