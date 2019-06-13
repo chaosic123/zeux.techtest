@@ -33,5 +33,12 @@ namespace Zeux.Test.Server.Controllers
         {
             return await _assetService.GetTypes();
         }
+
+        //This method is to get just the assets - not just the types
+
+        public async Task<IEnumerable<Asset>> GetAssets()
+        {
+            return await _assetService.Get();
+        }
     }
 }
